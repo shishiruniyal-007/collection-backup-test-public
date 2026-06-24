@@ -15,13 +15,6 @@ public class Calculator {
         return a%b;
     }
 
-    public double divide(int a, int b) {
-        if (b == 0) {
-            throw new IllegalArgumentException("Cannot divide by zero");
-        }
-        return (double) a / b;
-    }
-
     public static void main(String[] args) {
         Calculator calc = new Calculator();
         System.out.println("2 + 3 = " + calc.add(2, 3));
