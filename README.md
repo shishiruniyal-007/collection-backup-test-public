@@ -1,6 +1,3 @@
 # collection-backup-test-public
 
-
-Test Changes
-
-Checking 2
+This is a Java Repo
