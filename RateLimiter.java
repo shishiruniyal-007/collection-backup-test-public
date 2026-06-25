@@ -1,14 +1,23 @@
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 /**
- * A simple sliding-window rate limiter.
+ * A thread-safe sliding-window rate limiter.
  *
  * Allows at most {@code maxRequests} within any {@code windowMillis} time window.
+ * All access to the shared timestamp window is guarded by an internal lock, so
+ * instances may be shared safely across multiple threads.
  */
 public class RateLimiter {
+    private static final Logger LOGGER = Logger.getLogger(RateLimiter.class.getName());
+
     private final int maxRequests;
     private final long windowMillis;
+    private final ReentrantLock lock = new ReentrantLock();
+
+    // Guarded by {@code lock}.
     private final Deque<Long> timestamps = new ArrayDeque<>();
 
     public RateLimiter(int maxRequests, long windowMillis) {
@@ -28,16 +37,28 @@ public class RateLimiter {
      * @param nowMillis the current time in milliseconds
      * @return {@code true} if the request is permitted, {@code false} if rate limited
      */
-    public synchronized boolean allow(long nowMillis) {
-        long windowStart = nowMillis - windowMillis;
-        while (!timestamps.isEmpty() && timestamps.peekFirst() <= windowStart) {
-            timestamps.pollFirst();
+    public boolean allow(long nowMillis) {
+        lock.lock();
+        try {
+            long windowStart = nowMillis - windowMillis;
+            int before = timestamps.size();
+            while (!timestamps.isEmpty() && timestamps.peekFirst() <= windowStart) {
+                timestamps.pollFirst();
+            }
+            int evicted = before - timestamps.size();
+            if (evicted > 0) {
+                LOGGER.fine(() -> "Evicted " + evicted + " expired timestamp(s) before " + windowStart);
+            }
+            if (timestamps.size() < maxRequests) {
+                timestamps.addLast(nowMillis);
+                LOGGER.fine(() -> "ALLOWED at " + nowMillis + " (" + timestamps.size() + "/" + maxRequests + " in window)");
+                return true;
+            }
+            LOGGER.fine(() -> "RATE LIMITED at " + nowMillis + " (" + timestamps.size() + "/" + maxRequests + " in window)");
+            return false;
+        } finally {
+            lock.unlock();
         }
-        if (timestamps.size() < maxRequests) {
-            timestamps.addLast(nowMillis);
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -50,6 +71,13 @@ public class RateLimiter {
     }
 
     public static void main(String[] args) {
+        // Enable FINE-level debug logging for the demo.
+        LOGGER.setLevel(java.util.logging.Level.FINE);
+        java.util.logging.ConsoleHandler handler = new java.util.logging.ConsoleHandler();
+        handler.setLevel(java.util.logging.Level.FINE);
+        LOGGER.addHandler(handler);
+        LOGGER.setUseParentHandlers(false);
+
         RateLimiter limiter = new RateLimiter(3, 1000);
         long now = System.currentTimeMillis();
         for (int i = 1; i <= 5; i++) {
