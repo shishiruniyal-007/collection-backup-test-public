@@ -1,14 +1,20 @@
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * A simple sliding-window rate limiter.
+ * A thread-safe sliding-window rate limiter.
  *
  * Allows at most {@code maxRequests} within any {@code windowMillis} time window.
+ * All access to the shared timestamp window is guarded by an internal lock, so
+ * instances may be shared safely across multiple threads.
  */
 public class RateLimiter {
     private final int maxRequests;
     private final long windowMillis;
+    private final ReentrantLock lock = new ReentrantLock();
+
+    // Guarded by {@code lock}.
     private final Deque<Long> timestamps = new ArrayDeque<>();
 
     public RateLimiter(int maxRequests, long windowMillis) {
@@ -28,16 +34,21 @@ public class RateLimiter {
      * @param nowMillis the current time in milliseconds
      * @return {@code true} if the request is permitted, {@code false} if rate limited
      */
-    public synchronized boolean allow(long nowMillis) {
-        long windowStart = nowMillis - windowMillis;
-        while (!timestamps.isEmpty() && timestamps.peekFirst() <= windowStart) {
-            timestamps.pollFirst();
+    public boolean allow(long nowMillis) {
+        lock.lock();
+        try {
+            long windowStart = nowMillis - windowMillis;
+            while (!timestamps.isEmpty() && timestamps.peekFirst() <= windowStart) {
+                timestamps.pollFirst();
+            }
+            if (timestamps.size() < maxRequests) {
+                timestamps.addLast(nowMillis);
+                return true;
+            }
+            return false;
+        } finally {
+            lock.unlock();
         }
-        if (timestamps.size() < maxRequests) {
-            timestamps.addLast(nowMillis);
-            return true;
-        }
-        return false;
     }
 
     /**
