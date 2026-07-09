@@ -37,7 +37,7 @@ public class RateLimiter {
      * @param nowMillis the current time in milliseconds
      * @return {@code true} if the request is permitted, {@code false} if rate limited
      */
-    public boolean allow(long nowMillis) {
+    public boolean allow(long nowMillis) throws Exception {
         lock.lock();
         try {
             long windowStart = nowMillis - windowMillis;
