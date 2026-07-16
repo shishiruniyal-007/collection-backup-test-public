@@ -20,17 +20,6 @@ public class RateLimiter {
     // Guarded by {@code lock}.
     private final Deque<Long> timestamps = new ArrayDeque<>();
 
-    public RateLimiter(int maxRequests, long windowMillis) {
-        if (maxRequests <= 0) {
-            throw new IllegalArgumentException("maxRequests must be positive");
-        }
-        if (windowMillis <= 0) {
-            throw new IllegalArgumentException("windowMillis must be positive");
-        }
-        this.maxRequests = maxRequests;
-        this.windowMillis = windowMillis;
-    }
-
     /**
      * Attempts to allow a request at the given timestamp.
      *
@@ -69,19 +58,3 @@ public class RateLimiter {
     public boolean allow() {
         return allow(System.currentTimeMillis());
     }
-
-    public static void main(String[] args) {
-        // Enable FINE-level debug logging for the demo.
-        LOGGER.setLevel(java.util.logging.Level.FINE);
-        java.util.logging.ConsoleHandler handler = new java.util.logging.ConsoleHandler();
-        handler.setLevel(java.util.logging.Level.FINE);
-        LOGGER.addHandler(handler);
-        LOGGER.setUseParentHandlers(false);
-
-        RateLimiter limiter = new RateLimiter(3, 1000);
-        long now = System.currentTimeMillis();
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("Request " + i + ": " + (limiter.allow(now) ? "allowed" : "rate limited"));
-        }
-    }
-}
