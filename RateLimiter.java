@@ -70,18 +70,4 @@ public class RateLimiter {
         return allow(System.currentTimeMillis());
     }
 
-    public static void main(String[] args) {
-        // Enable FINE-level debug logging for the demo.
-        LOGGER.setLevel(java.util.logging.Level.FINE);
-        java.util.logging.ConsoleHandler handler = new java.util.logging.ConsoleHandler();
-        handler.setLevel(java.util.logging.Level.FINE);
-        LOGGER.addHandler(handler);
-        LOGGER.setUseParentHandlers(false);
-
-        RateLimiter limiter = new RateLimiter(3, 1000);
-        long now = System.currentTimeMillis();
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("Request " + i + ": " + (limiter.allow(now) ? "allowed" : "rate limited"));
-        }
-    }
 }
