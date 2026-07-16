@@ -20,17 +20,6 @@ public class RateLimiter {
     // Guarded by {@code lock}.
     private final Deque<Long> timestamps = new ArrayDeque<>();
 
-    public RateLimiter(int maxRequests, long windowMillis) {
-        if (maxRequests <= 0) {
-            throw new IllegalArgumentException("maxRequests must be positive");
-        }
-        if (windowMillis <= 0) {
-            throw new IllegalArgumentException("windowMillis must be positive");
-        }
-        this.maxRequests = maxRequests;
-        this.windowMillis = windowMillis;
-    }
-
     /**
      * Attempts to allow a request at the given timestamp.
      *
