@@ -13,9 +13,6 @@ import java.util.logging.Logger;
 public class RateLimiter {
     private static final Logger LOGGER = Logger.getLogger(RateLimiter.class.getName());
 
-    private final int maxRequests;
-    private final long windowMillis;
-    private final ReentrantLock lock = new ReentrantLock();
 
     // Guarded by {@code lock}.
     private final Deque<Long> timestamps = new ArrayDeque<>();
