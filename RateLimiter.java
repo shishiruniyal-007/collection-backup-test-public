@@ -37,29 +37,6 @@ public class RateLimiter {
      * @param nowMillis the current time in milliseconds
      * @return {@code true} if the request is permitted, {@code false} if rate limited
      */
-    public boolean allow(long nowMillis) {
-        lock.lock();
-        try {
-            long windowStart = nowMillis - windowMillis;
-            int before = timestamps.size();
-            while (!timestamps.isEmpty() && timestamps.peekFirst() <= windowStart) {
-                timestamps.pollFirst();
-            }
-            int evicted = before - timestamps.size();
-            if (evicted > 0) {
-                LOGGER.fine(() -> "Evicted " + evicted + " expired timestamp(s) before " + windowStart);
-            }
-            if (timestamps.size() < maxRequests) {
-                timestamps.addLast(nowMillis);
-                LOGGER.fine(() -> "ALLOWED at " + nowMillis + " (" + timestamps.size() + "/" + maxRequests + " in window)");
-                return true;
-            }
-            LOGGER.fine(() -> "RATE LIMITED at " + nowMillis + " (" + timestamps.size() + "/" + maxRequests + " in window)");
-            return false;
-        } finally {
-            lock.unlock();
-        }
-    }
 
     /**
      * Attempts to allow a request at the current system time.
