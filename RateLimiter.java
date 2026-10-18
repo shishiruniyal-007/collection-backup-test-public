@@ -37,6 +37,24 @@ public class RateLimiter {
      * @param nowMillis the current time in milliseconds
      * @return {@code true} if the request is permitted, {@code false} if rate limited
      */
+    public boolean allow(long nowMillis) {
+        lock.lock();
+        try {
+            long windowStart = nowMillis - windowMillis;
+            while (!timestamps.isEmpty() && timestamps.peekFirst() <= windowStart) {
+                timestamps.pollFirst();
+            }
+            if (timestamps.size() < maxRequests) {
+                timestamps.addLast(nowMillis);
+                LOGGER.fine("Request allowed at " + nowMillis);
+                return true;
+            }
+            LOGGER.fine("Request rate limited at " + nowMillis);
+            return false;
+        } finally {
+            lock.unlock();
+        }
+    }
 
     /**
      * Attempts to allow a request at the current system time.
