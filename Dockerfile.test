@@ -1,0 +1,32 @@
+# syntax=docker/dockerfile:1
+# ---------------------------------------------------------------------------
+# Test image for RateLimiter
+#
+# Builds a self-contained image that compiles the project and executes the
+# full JUnit 5 suite via Maven.  The image exits non-zero if any test fails,
+# making it suitable as a blocking CI step.
+#
+# Build:
+#   docker build -f Dockerfile.test -t rate-limiter-test .
+# Run (optional – tests already ran at build time):
+#   docker run --rm rate-limiter-test
+# ---------------------------------------------------------------------------
+FROM maven:3.9-eclipse-temurin-17 AS test-runner
+
+LABEL org.opencontainers.image.description="RateLimiter JUnit 5 test image (Java 17)"
+
+WORKDIR /app
+
+# ── 1. Cache dependencies (invalidated only when pom.xml changes) ──────────
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
+
+# ── 2. Copy source and test trees ──────────────────────────────────────────
+COPY src ./src
+
+# ── 3. Compile and run the full test suite ─────────────────────────────────
+#    Build fails here if any test fails – that is the desired behaviour.
+RUN mvn -B test
+
+# ── Default command (informational; tests already ran above) ───────────────
+CMD ["mvn", "-B", "test"]
