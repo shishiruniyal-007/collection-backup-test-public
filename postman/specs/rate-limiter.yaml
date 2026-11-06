@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Rate Limiter API
   version: 0.1.0
-  description: Fixed-window rate limiter.
+  description: Sliding-window rate limiter.
 paths:
   /limiters:
     post:
@@ -59,6 +59,3 @@ components:
         windowSeconds:
           type: integer
           description: Window length in seconds.
-        burst:
-          type: integer
-          description: Extra requests allowed above the limit in a short burst.
