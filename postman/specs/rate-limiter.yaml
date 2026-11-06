@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Rate Limiter API
-  version: 0.1.0
-  description: Fixed-window rate limiter.
+  version: 0.2.0
+  description: Sliding-window rate limiter.
 paths:
   /limiters:
     post:
@@ -35,30 +35,15 @@ paths:
                 properties:
                   allowed:
                     type: boolean
-  /limiters/{id}/reset:
-    post:
-      summary: Reset a rate limiter's window
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '204':
-          description: Window cleared
 components:
   schemas:
     LimiterConfig:
       type: object
-      required: [limit, windowSeconds]
+      required: [maxRequests, windowMillis]
       properties:
-        limit:
+        maxRequests:
           type: integer
-          description: Maximum requests per window.
-        windowSeconds:
+          description: Maximum requests allowed within the sliding window.
+        windowMillis:
           type: integer
-          description: Window length in seconds.
-        burst:
-          type: integer
-          description: Extra requests allowed above the limit in a short burst.
+          description: Sliding window length in milliseconds.
