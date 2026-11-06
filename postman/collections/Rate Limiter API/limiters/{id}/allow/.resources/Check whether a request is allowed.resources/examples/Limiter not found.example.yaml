@@ -3,7 +3,7 @@ request:
   url: "{{baseUrl}}/limiters/:id/allow"
   method: POST
   pathVariables:
-    id: string
+    id: limiter-unknown
   body:
     type: text
     content: ""

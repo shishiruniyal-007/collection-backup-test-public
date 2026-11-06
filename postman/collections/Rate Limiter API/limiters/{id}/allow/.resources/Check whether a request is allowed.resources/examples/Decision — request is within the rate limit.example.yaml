@@ -5,7 +5,7 @@ request:
   headers:
     Accept: application/json
   pathVariables:
-    id: string
+    id: limiter-abc123
   body:
     type: text
     content: ""

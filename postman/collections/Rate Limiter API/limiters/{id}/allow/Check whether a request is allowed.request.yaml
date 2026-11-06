@@ -6,7 +6,7 @@ headers:
   Accept: application/json
 pathVariables:
   - key: id
-    value: string
+    value: limiter-abc123
     disabled: false
     description: ""
     $type: |-
