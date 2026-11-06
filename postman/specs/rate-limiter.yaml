@@ -1,6 +1,8 @@
 openapi: 3.0.3
 info:
   title: Rate Limiter API
+  contact:
+    name: Platform team
   version: 0.1.0
   description: Fixed-window rate limiter.
 paths:
