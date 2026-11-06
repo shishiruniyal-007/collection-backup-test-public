@@ -35,6 +35,18 @@ paths:
                 properties:
                   allowed:
                     type: boolean
+  /limiters/{id}/reset:
+    post:
+      summary: Reset a rate limiter's window
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Window cleared
 components:
   schemas:
     LimiterConfig:
