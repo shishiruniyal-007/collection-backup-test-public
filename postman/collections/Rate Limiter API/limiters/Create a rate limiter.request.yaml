@@ -1,0 +1,35 @@
+$kind: http-request
+description: ""
+url: "{{baseUrl}}/limiters"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+      "limit": 1579,
+      "windowSeconds": 7450
+    }
+  $type: |-
+    {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "description": "Maximum requests per window."
+        },
+        "windowSeconds": {
+          "type": "integer",
+          "description": "Window length in seconds."
+        }
+      },
+      "required": [
+        "limit",
+        "windowSeconds"
+      ]
+    }
+settings: {}
+examples: ./.resources/Create a rate limiter.resources/examples
+order: 1000

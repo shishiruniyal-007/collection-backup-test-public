@@ -1,0 +1,6 @@
+- relativePath: postman/specs/rate-limiter.yaml
+  elementType: specification
+- relativePath: postman/collections/Rate Limiter API
+  elementType: collection
+- relativePath: postman/environments/Rate Limiter API.environment.yaml
+  elementType: environment

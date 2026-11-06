@@ -1,0 +1,5 @@
+$kind: collection
+name: Rate Limiter API
+description: Sliding-window rate limiter.
+variables:
+  baseUrl: "{{baseUrl}}"

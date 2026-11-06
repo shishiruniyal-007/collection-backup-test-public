@@ -1,0 +1,13 @@
+workflows:
+  syncSpecToCollection:
+    - spec: ../postman/specs/rate-limiter.yaml
+      collection: ../postman/collections/Rate Limiter API
+      options:
+        syncExamples: false
+        deleteOrphanedRequests: false
+  syncCollectionToSpec:
+    - spec: ../postman/specs/rate-limiter.yaml
+      collection: ../postman/collections/Rate Limiter API
+      options:
+        syncExamples: false
+        deleteOrphanedRequests: false
