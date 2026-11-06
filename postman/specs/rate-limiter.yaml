@@ -19,6 +19,7 @@ paths:
   /limiters/{id}/allow:
     post:
       summary: Check whether a request is allowed
+      description: Returns 429 when the limiter has no capacity left.
       parameters:
         - name: id
           in: path
