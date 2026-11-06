@@ -1,0 +1,26 @@
+$kind: http-example
+request:
+  url: "{{baseUrl}}/limiters"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Accept: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "limit": 0,
+        "windowSeconds": -1
+      }
+response:
+  statusCode: 400
+  statusText: Bad Request
+  headers:
+    Content-Type: application/json
+  body:
+    type: json
+    content: |-
+      {
+        "error": "limit and windowSeconds must be positive integers"
+      }
+order: 2000

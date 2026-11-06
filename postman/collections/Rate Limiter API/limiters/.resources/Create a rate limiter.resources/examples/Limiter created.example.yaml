@@ -9,8 +9,8 @@ request:
     type: json
     content: |-
       {
-        "limit": 1579,
-        "windowSeconds": 7450
+        "limit": 100,
+        "windowSeconds": 60
       }
 response:
   statusCode: 201
@@ -21,7 +21,7 @@ response:
     type: json
     content: |-
       {
-        "id": "string"
+        "id": "limiter-abc123"
       }
     $type: |-
       {

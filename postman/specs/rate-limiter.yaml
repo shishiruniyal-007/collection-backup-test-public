@@ -25,6 +25,8 @@ paths:
                   id:
                     type: string
                     description: Unique identifier for the created limiter.
+        '400':
+          description: Invalid configuration — limit and windowSeconds must be positive integers
   /limiters/{id}/allow:
     post:
       summary: Check whether a request is allowed
@@ -63,7 +65,9 @@ components:
       properties:
         limit:
           type: integer
+          minimum: 1
           description: Maximum requests per window.
         windowSeconds:
           type: integer
+          minimum: 1
           description: Window length in seconds.
