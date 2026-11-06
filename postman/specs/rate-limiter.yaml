@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: Rate Limiter API
+  version: 0.1.0
+  description: Fixed-window rate limiter.
+paths:
+  /limiters:
+    post:
+      summary: Create a rate limiter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LimiterConfig'
+      responses:
+        '201':
+          description: Limiter created
+  /limiters/{id}/allow:
+    post:
+      summary: Check whether a request is allowed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Decision
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  allowed:
+                    type: boolean
+components:
+  schemas:
+    LimiterConfig:
+      type: object
+      required: [limit, windowSeconds]
+      properties:
+        limit:
+          type: integer
+          description: Maximum requests per window.
+        windowSeconds:
+          type: integer
+          description: Window length in seconds.
