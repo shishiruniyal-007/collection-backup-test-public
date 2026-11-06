@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Rate Limiter API
   version: 0.1.0
-  description: Fixed-window rate limiter.
+  description: Sliding-window rate limiter.
 paths:
   /limiters:
     post:
@@ -16,6 +16,15 @@ paths:
       responses:
         '201':
           description: Limiter created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id]
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier for the created limiter.
   /limiters/{id}/allow:
     post:
       summary: Check whether a request is allowed
@@ -27,7 +36,18 @@ paths:
             type: string
       responses:
         '200':
-          description: Decision
+          description: Decision — request is within the rate limit
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  allowed:
+                    type: boolean
+        '404':
+          description: Limiter not found
+        '429':
+          description: Rate limit exceeded
           content:
             application/json:
               schema:
