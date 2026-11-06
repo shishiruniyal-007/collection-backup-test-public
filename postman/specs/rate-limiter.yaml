@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Rate Limiter API
-  version: 0.1.0
-  description: Fixed-window rate limiter.
+  version: 0.2.0
+  description: Thread-safe sliding-window rate limiter.
 paths:
   /limiters:
     post:
@@ -51,11 +51,11 @@ components:
   schemas:
     LimiterConfig:
       type: object
-      required: [limit, windowSeconds]
+      required: [maxRequests, windowMillis]
       properties:
-        limit:
+        maxRequests:
           type: integer
-          description: Maximum requests per window.
-        windowSeconds:
+          description: Maximum requests allowed within the window.
+        windowMillis:
           type: integer
-          description: Window length in seconds.
+          description: Window length in milliseconds.
