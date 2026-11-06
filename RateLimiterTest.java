@@ -136,7 +136,7 @@ public class RateLimiterTest {
     static void testNoArgAllow() {
         System.out.println("\n[No-arg allow()]");
         RateLimiter limiter = new RateLimiter(2, 60_000);
-        // Both calls happen within the same large window, so quota applies.
+        // All three calls happen within the same large window, so quota applies.
         assertTrue("1st no-arg call allowed", limiter.allow());
         assertTrue("2nd no-arg call allowed", limiter.allow());
         assertFalse("3rd no-arg call denied (limit reached)", limiter.allow());
